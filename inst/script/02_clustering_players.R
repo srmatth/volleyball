@@ -14,6 +14,8 @@ library(dplyr)
 library(readr)
 library(tidymodels)
 library(purrr)
+library(ggplot2)
+library(GGally)
 
 tidymodels_prefer()
 
@@ -77,13 +79,38 @@ player_clusters <- augment(clusters_final, player_info)
 
 write_csv(player_clusters, "data/player_clusters.csv")
 
+library(extrafont)
+loadfonts()
 colors <- c("red", "black", "blue", "green")
+
+
 
 pairs(
   player_clusters %>%
-    select(-name, -birthdate, -.cluster),
+    select(-name, -birthdate, -.cluster) %>%
+    magrittr::set_colnames(
+      snakecase::to_title_case(
+        colnames(.)
+      )
+    ),
   col = colors[player_clusters$.cluster],
-  pch = 19
+  pch = 19,
+  alpha = 0.5,
+  family = "Times New Roman"
 )
+
+player_clusters %>%
+  select(-name, -birthdate) %>%
+  magrittr::set_colnames(
+    snakecase::to_title_case(
+      colnames(.)
+    )
+  ) %>%
+  ggpairs(columns = 1:6, aes(color = Cluster)) +
+  theme_classic() +
+  theme(
+    text = element_text(family = "Times New Roman"),
+    strip.text.y = element_text(angle = 0)
+  )
 
 
