@@ -213,6 +213,8 @@ player_info <- player_stats %>%
   select(
     name,
     birthdate,
+    num_games,
+    overall_record,
     height,
     hit_pct,
     aces_per_game,

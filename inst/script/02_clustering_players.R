@@ -26,7 +26,7 @@ set.seed(16)
 ## Preprocess the data ----
 
 mod_dat <- player_info %>%
-  select(-name, -birthdate) %>%
+  select(-name, -birthdate, -num_games, -overall_record) %>%
   mutate(
     across(
       where(is.numeric),
@@ -79,6 +79,8 @@ player_clusters <- augment(clusters_final, player_info)
 
 write_csv(player_clusters, "data/player_clusters.csv")
 
+player_clusters <- read_csv("data/player_clusters.csv")
+
 library(extrafont)
 loadfonts()
 colors <- c("red", "black", "blue", "green")
@@ -99,14 +101,44 @@ pairs(
   family = "Times New Roman"
 )
 
+new_plot <- function(data, mapping, ...) {
+  data %>%
+    ggplot() +
+    geom_histogram(mapping = mapping)
+}
+
 player_clusters %>%
-  select(-name, -birthdate) %>%
+  select(-name, -birthdate, -num_games, -overall_record) %>%
   magrittr::set_colnames(
     snakecase::to_title_case(
       colnames(.)
     )
   ) %>%
-  ggpairs(columns = 1:6, aes(color = Cluster)) +
+  ggpairs(
+    columns = 1:6,
+    ggplot2::aes(
+      color = as.factor(Cluster),
+      fill = as.factor(Cluster)
+    ),
+    diag = list(continuous = new_plot),
+    upper = list(continuous = wrap("cor", family = "Times New Roman"))
+  ) +
+  scale_color_manual(
+    values = c(
+      "#B6D094",
+      "#6A2E35",
+      "#D6B59A",
+      "#2E2836"
+    )
+  ) +
+  scale_fill_manual(
+    values = c(
+      "#B6D094",
+      "#6A2E35",
+      "#D6B59A",
+      "#2E2836"
+    )
+  ) +
   theme_classic() +
   theme(
     text = element_text(family = "Times New Roman"),
