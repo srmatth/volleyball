@@ -31,7 +31,8 @@ September of 2021.
 
 ## Resources
 
--   For a web version of the poster, [click here]()
+-   For a web version of the poster, [click
+    here](https://srmatth.github.io/resources/volleyball_partners.pdf)
 -   To view the original data posting on Kaggle, [click
     here](https://www.kaggle.com/jessemostipak/beach-volleyball)
 -   For the UCSAS Website, [click
